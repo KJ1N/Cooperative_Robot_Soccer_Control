@@ -36,6 +36,7 @@ The Lua layer determines *when* a role should position, acquire the ball, pass, 
 │   └── shoot2/           # Shooting variant, target y = -25, angle tolerance 0.25 rad
 ├── lua_scripts/
 │   ├── 1back-1-01.lua
+│   ├── 1back-2-01.lua
 │   ├── 1corcer-1-02.lua
 │   ├── 1corcer-1-03.lua
 │   ├── 1front-2-03.lua
@@ -180,6 +181,7 @@ Lua 层决定一个角色何时执行定位、拿球、传球、接球、射门�
 │   └── shoot2/           # 射门变体，目标 y = -25，角度容差 0.25 rad
 ├── lua_scripts/
 │   ├── 1back-1-01.lua
+│   ├── 1back-2-01.lua
 │   ├── 1corcer-1-02.lua
 │   ├── 1corcer-1-03.lua
 │   ├── 1front-2-03.lua
