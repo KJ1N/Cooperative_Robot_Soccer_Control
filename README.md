@@ -6,7 +6,7 @@
 
 This repository contains an archived competition code of a cooperative robot-soccer attack. Lua scripts schedule multi-robot tactics as finite-state machines, while C++ skill modules calculate target positions, desired orientations, and kick requests through a `PlayerTask` interface.
 
-The archive supports source-level inspection of the passing workflow and its geometric rules. It is **not a standalone simulator or a complete rebuildable controller**: the original runtime, task-registration layer, several platform headers, build files, and compiled DLLs are not included.
+The archive supports source-level inspection of the passing workflow and its geometric rules. It is **not a standalone simulator or a complete rebuildable controller**: the original runtime, task-registration layer, Visual Studio project files, platform dependencies, and compiled DLLs are not included.
 
 ## System overview
 
@@ -42,15 +42,17 @@ The Lua layer determines *when* a role should position, acquire the ball, pass, 
 │   ├── 1front-2-03.lua
 │   ├── 1middle-1-01.lua
 │   └── kick-penalty01.lua
-└── include/
-    ├── PlayerTask.h      # Action-request data structure
-    ├── worldmodel.h      # Read-only access to observed robot and ball states
-    ├── maths.h           # Geometry helper declarations
-    ├── constants.h       # Field and robot constants
-    ├── vector.h          # 2D/3D vector implementation
+├── include/
+│   ├── PlayerTask.h      # Action-request data structure
+│   ├── worldmodel.h      # Read-only access to observed robot and ball states
+│   ├── maths.h           # Geometry helper declarations
+│   ├── constants.h       # Field and robot constants
+│   ├── vector.h          # 2D/3D vector implementation
     └── other interface and XML configuration files
+└── dll_support/
+    └── utils/            # Shared source used by the original DLL projects
 ```
-
+The planned `dll_support/utils/` archive preserves shared source from the original DLL projects, including world-model and task definitions, vector and geometry utilities, and platform state/vision helpers. It is build-support code rather than an additional robot skill.
 
 ## Tactical finite-state machines
 
@@ -132,7 +134,7 @@ The two shooting variants request `kickPower = 127`. They differ in their prescr
 ## Integration with the original platform
 
 1. Restore the original Windows robot-soccer SDK and runtime dependencies.
-2. Expose the headers in `include/` through the path expected by the source, such as `utils/PlayerTask.h`, `utils/worldmodel.h`, and `utils/maths.h`, or update the include paths.
+2. Place `dll_support/utils/` in the layout expected by the original project, or expose the selected headers in `include/` through equivalent include paths.
 3. Build each required C++ skill as a separate DLL exporting `player_plan`.
 4. Register each Lua task string with the corresponding compiled skill in the platform loader.
 5. Place the Lua play scripts in the platform's strategy directory.
@@ -195,7 +197,7 @@ Lua 层决定一个角色何时执行定位、拿球、传球、接球、射门�
     ├── vector.h          # 二维/三维向量实现
     └── 其他接口文件与 XML 配置文件
 ```
-
+归档到 `dll_support/utils/` 的内容来自原 DLL 工程的公共支持目录，包括世界模型与任务结构、向量和几何运算，以及平台状态与视觉对象等辅助定义。这些文件属于 DLL 构建支持代码，并不是一个新的机器人技能；
 
 ### 战术有限状态机
 
@@ -277,7 +279,7 @@ PlayerTask player_plan(const WorldModel* model, int robot_id);
 
 
 1. 恢复原 Windows 机器人足球 SDK 和运行时依赖。
-2. 按源代码预期的路径提供 `include/` 下的头文件，例如 `utils/PlayerTask.h`、`utils/worldmodel.h` 和 `utils/maths.h`；也可以相应修改包含路径。
+2. 按原工程预期的目录结构放置 `dll_support/utils/`，或为 `include/` 中选取的头文件配置等效的包含路径。
 3. 将每个所需 C++ 技能分别编译为导出 `player_plan` 的 DLL。
 4. 在平台加载器中把 Lua 任务字符串注册到相应的已编译技能。
 5. 将 Lua 战术脚本放入平台的策略目录。
